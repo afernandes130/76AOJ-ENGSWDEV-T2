@@ -4,6 +4,7 @@ import { ConfigService } from './config.service';
 import { throwError, Observable, Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Employee } from '../models/employee';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class EmployeesService {
   SaveEvent: Subject<Employee> = new Subject<Employee>();
 
   constructor(private httpClient: HttpClient, private config: ConfigService) {
-    this.baseUrl = `${config.getConfig().managerApi.employees.url}/employees`
+    this.baseUrl = `${environment.apiemployees}/employees`
   }
 
   public AddListenerEvent() : Observable<Employee>  {
@@ -28,28 +29,28 @@ export class EmployeesService {
   }
 
 
-  public GetAll() {    
+  public GetAll() {
     return this.httpClient.get<Employee[]>(this.baseUrl)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  public GetByAge(age: number) {    
+  public GetByAge(age: number) {
     return this.httpClient.get<Employee[]>(this.baseUrl + "?byAge=" + age)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  public GetByGender(gender: number) {    
+  public GetByGender(gender: number) {
     return this.httpClient.get<Employee[]>(this.baseUrl + "?byGender=" + gender)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  public GetByName(name: string) {    
+  public GetByName(name: string) {
     return this.httpClient.get<Employee[]>(this.baseUrl + "?byName=" + name)
       .pipe(
         catchError(this.handleError)

@@ -74,20 +74,19 @@
       depends_on:
         eureka:
           condition: service_healthy
-    # app-ui:
-    #  image: app-ui
-    #  container_name: app-ui
-    #  build: 
-    #    context: ./employee-ui
-    #    dockerfile: Dockerfile
-    #  ports:
-    #    - "8080:8080"
-    #    - "8000:8000"
-    #  networks: 
-    #    - net
-    #  depends_on:
-    #    - employee-api
-    #    - skill-api
+    app-ui:
+     image: app-ui
+     container_name: app-ui
+     build: 
+       context: ./employee-ui
+       dockerfile: Dockerfile
+     ports:
+       - "80:80"
+     networks: 
+       - net
+     depends_on:
+       - employee-api
+       - skill-api
     db:
       image: mysql
       command: --default-authentication-plugin=mysql_native_password
