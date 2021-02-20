@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Manager.Models;
 using Manager.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Steeltoe.Messaging.RabbitMQ.Core;
 
 namespace Manager.Controllers
 {
@@ -11,10 +12,16 @@ namespace Manager.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
+        public const string RECEIVE_AND_CONVERT_QUEUE = "slack_comunication_queue";
         private readonly IEmployeeRepository _repository;
-        public EmployeesController(IEmployeeRepository repository)
+        private readonly RabbitTemplate _rabbitTemplate;
+        private readonly RabbitAdmin _rabbitAdmin;
+
+        public EmployeesController(IEmployeeRepository repository, RabbitTemplate rabbitTemplate, RabbitAdmin rabbitAdmin)
         {
             _repository = repository;
+            _rabbitTemplate = rabbitTemplate;
+            _rabbitAdmin = rabbitAdmin;
         }
 
         [HttpGet]
@@ -73,7 +80,11 @@ namespace Manager.Controllers
                 if (ModelState.IsValid)
                 {
                     employee.EmployeeId = 0;
-                    await _repository.AddAsync(employee);                    
+                    await _repository.AddAsync(employee);
+
+                    var msg = $"Caros colaboradores, deem as boas vindas ao novo mebro desse time {employee.Name} {employee.LastName} ";
+                    _rabbitTemplate.ConvertAndSend(RECEIVE_AND_CONVERT_QUEUE, msg);
+
                     return Ok(employee);
                 }
 

@@ -1,3 +1,2 @@
 ConnectionString: server=db;port=3306;database=Employees;uid=root;password=password
-Value1: TesteValor1-prod
-Value2: TesteValor2-prod
+Addresses: amqp://guest:guest@rabbitmq:5672

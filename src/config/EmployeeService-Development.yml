@@ -1,3 +1,2 @@
 ConnectionString: server=localhost;port=3306;database=Employees;uid=root;password=password
-Value1: TesteValor1-dese
-Value2: TesteValor2-dese
+Addresses: amqp://guest:guest@localhost

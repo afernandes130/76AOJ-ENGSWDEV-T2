@@ -1,15 +1,23 @@
-using Manager.Infrastructure;
-using Manager.Repositories;
+using listener_api.Listeners;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Steeltoe.Messaging.RabbitMQ.Config;
 using Steeltoe.Messaging.RabbitMQ.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Manager
+using listener_api.Interfaces;
+using Refit;
+
+namespace listener_api
 {
     public class Startup
     {
@@ -21,28 +29,24 @@ namespace Manager
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(option => option.AddPolicy("ManagerPolicy", builder => {
-                builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            }));
-
-            services.AddDbContext<ApplicationContext>(opt => opt.UseMySql(Configuration["ConnectionString"]));
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddControllers().AddJsonOptions(options => {
-                options.JsonSerializerOptions.IgnoreNullValues = true;
-            });
-            services.AddSwaggerGen();
+            services.AddControllers();
             services.AddRabbitServices();
             services.AddRabbitAdmin();
             services.AddRabbitQueue(new Queue(RECEIVE_AND_CONVERT_QUEUE));
-            services.AddRabbitTemplate();
+            services.AddSingleton<EmployeeListeners>();
+            services.AddRabbitListeners<EmployeeListeners>();
             services.Configure<RabbitOptions>(options =>
             {
                 options.Addresses = Configuration["Addresses"];
             });
-        }
+            services.AddRefitClient<IslackApi>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration["APISlack"]));
+             }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -55,13 +59,6 @@ namespace Manager
             app.UseRouting();
 
             app.UseAuthorization();
-            
-            app.UseCors("ManagerPolicy");
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee Manager API");
-            });
 
             app.UseEndpoints(endpoints =>
             {

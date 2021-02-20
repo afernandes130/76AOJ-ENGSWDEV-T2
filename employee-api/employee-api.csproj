@@ -17,6 +17,7 @@
 	<PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.2" />
 	<PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.2" />
 	<PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.2" />
+	<PackageReference Include="Steeltoe.Messaging.RabbitMQ" Version="3.0.2" />
 	<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 

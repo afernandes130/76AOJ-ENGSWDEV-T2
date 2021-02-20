@@ -60,6 +60,20 @@
       depends_on:
         eureka:
           condition: service_healthy
+    listener-api:
+      image: listener-api
+      container_name: listener-api
+      build: 
+        context: ./listener-api
+        dockerfile: Dockerfile
+      ports:
+        - "7101:7101"
+        - "7100:7100"
+      networks: 
+        - net
+      depends_on:
+        eureka:
+          condition: service_healthy
     # app-ui:
     #  image: app-ui
     #  container_name: app-ui
