@@ -14,7 +14,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { EmployeesGridComponent } from './components/employees-grid/employees-grid.component';
 import { GenderNamePipe } from './pipes/gender-name.pipe';
-import { SkillsNamePipe } from './Pipes/skills-name.pipe';
+import { SkillsNamePipe } from './pipes/skills-name.pipe';
 
 const appConfig = (configService: ConfigService) => {
   return () => {

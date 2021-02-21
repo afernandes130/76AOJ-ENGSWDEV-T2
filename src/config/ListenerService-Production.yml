@@ -1,0 +1,2 @@
+Addresses: amqp://guest:guest@rabbitmq
+APISlack: https://hooks.slack.com

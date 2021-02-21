@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-worker_service-5BDBC717-C44B-45F0-A3DC-F3E0898A69B4</UserSecretsId>
+    <RootNamespace>worker_service</RootNamespace>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.11" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
+    <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.2" />
+    <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.2" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.2" />
+    <PackageReference Include="Steeltoe.Messaging.RabbitMQ" Version="3.0.2" />
+  </ItemGroup>
+</Project>

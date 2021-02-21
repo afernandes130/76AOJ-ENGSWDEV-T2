@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Steeltoe.Messaging.RabbitMQ.Config;
+using Steeltoe.Messaging.RabbitMQ.Extensions;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
@@ -15,6 +17,7 @@ namespace Manager
 {
     public class Startup
     {
+        public const string RECEIVE_AND_CONVERT_QUEUE = "slack_comunication_queue";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,6 +39,14 @@ namespace Manager
                 options.JsonSerializerOptions.IgnoreNullValues = true;
             });
             services.AddSwaggerGen();
+            services.AddRabbitServices();
+            services.AddRabbitAdmin();
+            services.AddRabbitQueue(new Queue(RECEIVE_AND_CONVERT_QUEUE));
+            services.AddRabbitTemplate();
+            services.Configure<RabbitOptions>(options =>
+            {
+                options.Addresses = Configuration["Addresses"];
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

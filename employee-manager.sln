@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "employee-api", "employee-ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "skill-api", "skill-api\skill-api.csproj", "{0DA7BD37-D39F-452F-ACF0-FCD856B321FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "listener-api", "listener-api\listener-api.csproj", "{0E636266-4AA2-4105-9CE4-1A37A207C489}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0DA7BD37-D39F-452F-ACF0-FCD856B321FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DA7BD37-D39F-452F-ACF0-FCD856B321FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DA7BD37-D39F-452F-ACF0-FCD856B321FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E636266-4AA2-4105-9CE4-1A37A207C489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E636266-4AA2-4105-9CE4-1A37A207C489}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E636266-4AA2-4105-9CE4-1A37A207C489}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E636266-4AA2-4105-9CE4-1A37A207C489}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

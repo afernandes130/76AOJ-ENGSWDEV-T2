@@ -4,6 +4,7 @@ import { ConfigService } from './config.service';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Skill } from '../models/skill';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -14,10 +15,10 @@ export class SkillsService {
   private baseUrl: string;
 
   constructor(private httpClient: HttpClient, private config: ConfigService) {
-    this.baseUrl = `${config.getConfig().managerApi.skills.url}/skills`
+    this.baseUrl = `${environment.apiskills}/skills`
   }
 
-  public GetAll() {    
+  public GetAll() {
     return this.httpClient.get<Skill[]>(this.baseUrl)
       .pipe(
         catchError(this.handleError)
