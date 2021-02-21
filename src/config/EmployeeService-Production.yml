@@ -1,3 +1,4 @@
 ConnectionString: server=db;port=3306;database=Employees;uid=root;password=password
+ElasticUri: http://elasticsearch
 Value1: TesteValor1-prod
 Value2: TesteValor2-prod

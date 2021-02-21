@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Manager.Models;
 using Manager.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Manager.Controllers
 {
@@ -12,16 +14,23 @@ namespace Manager.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRepository _repository;
-        public EmployeesController(IEmployeeRepository repository)
+        private readonly ILogger<EmployeesController> _logger;
+
+        public EmployeesController(IEmployeeRepository repository, ILogger<EmployeesController> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Employee>>> Get([FromQuery(Name = "byAge")]int? age, [FromQuery(Name = "byGender")] Gender? gender, [FromQuery(Name = "byName")] string name)
         {
+            using var scope = _logger.BeginScope(new { age, gender, name });
+
             try
             {
+                _logger.LogInformation("Listando funcionários");
+
                 if (age.HasValue)
                     return await _repository.GetByAge(age.Value);
 
@@ -35,6 +44,7 @@ namespace Manager.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Ocorreu um erro ao pesquisar os funcionários");
                 return Problem(ex.Message);
             }
         }
@@ -45,6 +55,8 @@ namespace Manager.Controllers
         {
             try
             {
+                _logger.LogInformation($"Recuperando o funcionário de id={id}");
+
                 if (id > 0)
                 {
                     var employee = await _repository.GetAsync(id);
@@ -60,6 +72,7 @@ namespace Manager.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Ocorreu um erro ao pesquisar o funcionário com id={id}");
                 return Problem(ex.Message);
             }
         }
@@ -68,8 +81,12 @@ namespace Manager.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Employee employee)
         {
+            using var scope = CreateScope(employee);
+
             try
             {
+                _logger.LogInformation("Criando um funcionário");
+
                 if (ModelState.IsValid)
                 {
                     employee.EmployeeId = 0;
@@ -81,6 +98,7 @@ namespace Manager.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Ocorreu um erro ao criar um funcionário");
                 return Problem(ex.Message);
             }
         }
@@ -89,6 +107,8 @@ namespace Manager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Employee employee)
         {
+            using var scope = CreateScope(employee);
+
             try
             {
                 if (id <= 0)
@@ -96,6 +116,7 @@ namespace Manager.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    _logger.LogInformation($"Atualizando o funcionário de id {id}");
 
                     if (!await _repository.ExistAsync(id))
                         return NotFound();
@@ -110,6 +131,7 @@ namespace Manager.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Ocorreu um erro ao atualizar um funcionário");
                 return Problem(ex.Message);
             }
         }
@@ -122,6 +144,8 @@ namespace Manager.Controllers
             {
                 if (id > 0)
                 {
+                    _logger.LogInformation($"Deletando o funcionário de id {id}");
+
                     var result = await _repository.DeleteAsync(id);
                     if (result == 0)
                     {
@@ -135,8 +159,12 @@ namespace Manager.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Ocorreu um erro ao deletar o funcionário de id={id}");
                 return Problem(ex.Message);
             }
         }
+
+        private IDisposable CreateScope(Employee employee)
+            => _logger.BeginScope(JsonSerializer.Serialize(employee));
     }
 }
