@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace listener_api.Interfaces
 {
-    public interface IslackApi
+    public interface ISlackApi
     {
         [Post("/services/T01NZEPF420/B01NCH3RW79/OTB4WN9PaB7smNEyYWR5PpS0")]
         Task SendWebhook([Body] MsgSlack msg );

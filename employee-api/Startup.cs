@@ -1,3 +1,4 @@
+using System;
 using Manager.Infrastructure;
 using Manager.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Steeltoe.Messaging.RabbitMQ.Config;
 using Steeltoe.Messaging.RabbitMQ.Extensions;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 namespace Manager
 {
@@ -23,6 +27,8 @@ namespace Manager
 
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureLogger();
+
             services.AddCors(option => option.AddPolicy("ManagerPolicy", builder => {
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             }));
@@ -43,7 +49,7 @@ namespace Manager
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -63,10 +69,23 @@ namespace Manager
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee Manager API");
             });
 
+            loggerFactory.AddSerilog();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void ConfigureLogger()
+        {
+            Log.Logger = new LoggerConfiguration()
+                                .Enrich.FromLogContext()
+                                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(Configuration["ElasticUri"]))
+                                {
+                                    AutoRegisterTemplate = true
+                                })
+                                .CreateLogger();
         }
     }
 }

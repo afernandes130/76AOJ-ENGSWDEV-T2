@@ -42,7 +42,7 @@ namespace listener_api
             {
                 options.Addresses = Configuration["Addresses"];
             });
-            services.AddRefitClient<IslackApi>()
+            services.AddRefitClient<ISlackApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(Configuration["APISlack"]));
              }
 

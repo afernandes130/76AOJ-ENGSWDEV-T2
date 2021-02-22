@@ -1,2 +1,3 @@
 ConnectionString: server=db;port=3306;database=Employees;uid=root;password=password
 Addresses: amqp://guest:guest@rabbitmq:5672
+ElasticUri: http://elasticsearch
